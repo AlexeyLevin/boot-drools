@@ -1,0 +1,30 @@
+package rules
+
+import com.moex.icdb.process.model.Document
+import org.springframework.http.HttpStatus
+
+rule "Создать уведомление"
+	when 
+		documentObject: Document(type=="Уведомление")
+	then
+		documentObject.setId(15);
+		documentObject.setNotifiedType(true);
+		documentObject.setStatus("Отправлено");
+		documentObject.setHttpStatus(HttpStatus.OK);
+	end
+rule "Создать заявление"
+	when 
+		documentObject: Document(type=="Заявление")
+	then
+		documentObject.setId(25);
+		documentObject.setStatus("Сохранено");
+		documentObject.setHttpStatus(HttpStatus.OK);
+end
+rule "Неверный формат"
+	when
+		documentObject: Document(type!="Уведомление"&&type!="Заявление")
+	then
+		documentObject.setId(-1);
+		documentObject.setStatus("Не найдено");
+		documentObject.setHttpStatus(HttpStatus.NOT_FOUND);
+end
